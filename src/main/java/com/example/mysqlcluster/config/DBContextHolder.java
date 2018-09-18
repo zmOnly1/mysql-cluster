@@ -1,4 +1,4 @@
-package com.example.mysqlcluster.db;
+package com.example.mysqlcluster.config;
 
 /**
  * Created by zm on 2018/9/18.

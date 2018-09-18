@@ -6,4 +6,7 @@
     <select id="executeQuery" resultType="java.util.Map">
         ${sql}
     </select>
+    <select id="executeQuery2" resultType="java.util.Map">
+        ${sql}
+    </select>
 </mapper>
