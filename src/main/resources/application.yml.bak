@@ -1,0 +1,51 @@
+#https://github.com/drtrang/druid-spring-boot
+
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://192.168.1.102:3306/test
+    username: system
+    password: 123456
+    druid:
+        max-wait: 30000
+        query-timeout: 10
+        validation-query: SELECT 1
+        use-global-data-source-stat: true
+
+
+spring:
+  datasource:
+    druid:
+      # 开启 StatFilter，默认开启，可通过 'enabled: false' 关闭
+      stat:
+        enabled: true
+        log-slow-sql: true
+        slow-sql-millis: 1000
+      # 开启 Slf4jFilter
+      slf4j:
+        enabled: true
+        data-source-log-enabled: false
+        connection-log-enabled: false
+        statement-log-enabled: false
+        result-set-log-enabled: false
+      # 开启 WallFilter
+      wall:
+        enabled: true
+        log-violation: true
+        throw-exception: false
+        ## WallConfig 配置
+        config:
+          delete-where-none-check: true
+      # 开启 ConfigFilter
+      config:
+        enabled: true
+      # 开启 Web 监控
+      web-stat:
+        enabled: true
+      # 开启 Aop 监控
+      aop-stat:
+        enabled: true
+      # 开启监控页面
+      stat-view-servlet:
+        enabled: true
