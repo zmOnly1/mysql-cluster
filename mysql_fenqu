@@ -1,0 +1,87 @@
+create table t_archievement (id int primary key auto_increment, name varchar(10));
+
+create table t_archievement_2017 as (select * from t_archievement);
+
+alter table t_archievement_2017 modify id int primary key auto_increment;
+
+指定引擎 
+create table t_myisam (id init) engine=myisam;
+
+InnoDB（共享表空间，独享表空间）
+ frm 结构文件
+ ibd 数据文件
+ idbata1 数据文件
+MyISAM
+ frm 结构文件
+ myd 数据文件
+ myi 索引文件
+ 
+show variables like '%innodb_file_per%';
+innodb_file_per_table=on;独享表空间，一个表一个文件
+innodb_file_per_table=off;共享表空间，一个文件多个表
+
+分表
+Range（按范围分文件）
+List（指定集合）
+Hash（对字段进行哈希）
+Key （ ）
+
+create table t_base(id int primary key auto_increment, name varchar(10));
+insert into t_base(name) select name from t_base;
+
+使用独享表空间
+innodb_file_per_table=on;独享表空间，一个表一个文件
+set global innodb_file_per_table=1;
+
+1.Range
+create table t_range(id int primary key auto_increment, name varchar(10)) partition by range(id)(
+	partition p0 values less than (1000000),
+	partition p1 values less than (2000000),
+	partition p2 values less than (3000000),
+	partition p3 values less than (4000000),
+	partition p4 values less than maxvalue
+);
+生成的文件
+t_range#P#p0.ibd
+t_range#P#p1.ibd
+t_range#P#p2.ibd
+t_range#P#p3.ibd
+t_range#P#p4.ibd
+查看表创建结构
+show create table t_range;
+
+2.List
+create table t_list(id int primary key auto_increment, province int))partition by list(id)(
+	partition p0 values in(1,2,3),
+	partition p1 values in(4,5,6)
+)
+t_list#P#p0.idb
+t_list#P#p1.idb
+
+删除分区
+alter table t_list drop partition p0;
+
+3.Hash
+create table t_hash(id int primary key auto_increment, name varchar(10) ))partition by hash(id) partitions 4;
+
+t_hash#P#p0.idb
+t_hash#P#p1.idb
+t_hash#P#p2.idb
+t_hash#P#p3.idb
+
+insert into t_hash(name) select name from t_base;
+
+vim wrapper.conf
+wrapper.java.additional.5=-XX:MaxDirectMemorySize=512M
+wrapper.java.additional.10=-Xmx512M
+wrapper.java.additional.11=-Xms512M
+./mycat console
+
+表定义schema.xml testdb
+用户server.xml root 123456
+
+create table employee(id int, name varchar(10), sharding_id int);
+<table name="employee" primaryKey="ID" dataNode="dn1,dn2" rule="sharding-by-intfile" />
+
+explain insert into employee(id,name,sharding_id) values (1, 'hello', 10000);
+explain查看数据分到哪里
